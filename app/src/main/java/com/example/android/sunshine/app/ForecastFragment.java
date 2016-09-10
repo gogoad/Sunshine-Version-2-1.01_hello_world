@@ -58,6 +58,12 @@ public class ForecastFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.forecastfragment, menu);
     }
@@ -66,29 +72,25 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
-            //从sharePreference中读取保存的值
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String location = preferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
-            fetchWeatherTask.execute(location);
+            updateWeather();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateWeather() {
+        FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
+        //从sharePreference中读取保存的值
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location = preferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
+        fetchWeatherTask.execute(location);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        String[] forecastArray = {
-                "星期一--晴--88/64",
-                "星期二--雾--88/64",
-                "星期三--多云--88/64",
-                "星期四--雷电--88/64",
-                "星期五--小雨--88/64",
-                "星期六--中雨--88/64",
-                "星期天--大雾--88/64"
-        };
+
 
         /**
          * (1) 该方法对于基本数据类型的数组支持并不好,当数组是基本数据类型时不建议使用
@@ -97,10 +99,10 @@ public class ForecastFragment extends Fragment {
          *     注意:仅仅针对对象数组类型,基本数据类型数组不具备该特性
          * (3) asList得到的数组是的没有add和remove方法的
          */
-        List<String> weekForecast = new ArrayList<String>(Arrays.asList(forecastArray));
+
 
         adapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast,
-                R.id.list_item_forecast_textview, weekForecast);
+                R.id.list_item_forecast_textview, new ArrayList<String>());
 
 
         mListForecoast = (ListView) rootView.findViewById(R.id.listview_forecast);
@@ -197,7 +199,6 @@ public class ForecastFragment extends Fragment {
                 adapter.clear();
                 for (String forecastResult: result) {
                     adapter.add(forecastResult);
-
                 }
             }
         }
