@@ -91,7 +91,6 @@ public class ForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-
         /**
          * (1) 该方法对于基本数据类型的数组支持并不好,当数组是基本数据类型时不建议使用
          * (2) 当使用asList()方法时，数组就和列表链接在一起了.
@@ -99,7 +98,6 @@ public class ForecastFragment extends Fragment {
          *     注意:仅仅针对对象数组类型,基本数据类型数组不具备该特性
          * (3) asList得到的数组是的没有add和remove方法的
          */
-
 
         adapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast,
                 R.id.list_item_forecast_textview, new ArrayList<String>());
